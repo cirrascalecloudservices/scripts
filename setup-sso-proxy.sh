@@ -1,5 +1,9 @@
 #!/bin/bash -ex
 
+# [iff < 22.04] sudo add-apt-repository ppa:ondrej/apache2
+# sudo apt install apache2 libapache2-mod-auth-openidc
+# sudo a2enmod auth_openidc macro proxy_http ssl
+
 # USAGE: setup-sso-proxy.sh hype9f8-pve san01 https://172.17.0.252:8006
   # -> https://hype9f8-pve.san01.proxy.cirrascale.net
 
@@ -12,8 +16,8 @@ TO=${3?}
 
 cat > /etc/apache2/conf-available/${SITE?}.proxy.cirrascale.net.conf << EOF
 # sso
-OIDCClientID $(cat /etc/cirrascale/OIDCClientID)
-OIDCClientSecret $(cat /etc/cirrascale/OIDCClientSecret)
+OIDCClientID ${OIDCClientID?}
+OIDCClientSecret ${OIDCClientSecret?}
 OIDCProviderMetadataURL https://sso.cirrascale.com/realms/cirrascale-staff/.well-known/openid-configuration
 OIDCRedirectURI https://${SITE?}.proxy.cirrascale.net/redirect_uri
 OIDCCookieDomain ${SITE?}.proxy.cirrascale.net
