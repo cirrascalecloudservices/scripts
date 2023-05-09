@@ -1,13 +1,11 @@
 #!/bin/bash -ex
 
-# Usage: $0 -d 'baz.example.com' -d '*.baz.example.com'
-
-# cirrascale-opinionated certbot+lightsail helper
-# [1] requires aws lightsail domain entry create/delete iam permissions
+# Usage: setup-certbot.sh
+# Usage: setup-certbot.sh -d 'baz.example.com' -d '*.baz.example.com'
 
 apt-get install certbot python3-boto3 -y
 
-# auth
+# auth hook
 install <(cat << 'EOF'
 #!/usr/bin/env python3
 
@@ -35,7 +33,7 @@ time.sleep(25)
 EOF
 ) /usr/local/bin/auth-certbot-dns-lightsail.py
 
-# clean
+# clean hook
 install <(cat << 'EOF'
 #!/usr/bin/env python3
 
@@ -60,7 +58,7 @@ print(response)
 EOF
 ) /usr/local/bin/clean-certbot-dns-lightsail.py
 
-# cron daily reload
+# cron daily reload apache
 install <(cat << 'EOF'
 #!/bin/sh -e
 systemctl reload apache2
