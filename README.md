@@ -1,7 +1,7 @@
 # Install
 
 ```
-sudo pip install git+https://github.com/cirrascalecloudservices/scripts
+sudo pip install git+https://github.com/cirrascalecloudservices/scripts --force-reinstall
 ```
 
 # Sanity test aws credentials
