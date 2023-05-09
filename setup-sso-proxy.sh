@@ -1,8 +1,16 @@
 #!/bin/bash -ex
 
-# [iff < 22.04] sudo add-apt-repository ppa:ondrej/apache2
+# STEP 0 iff ubuntu 20.04 or older
+# sudo add-apt-repository ppa:ondrej/apache2
+
+# STEP 1
 # sudo apt install apache2 libapache2-mod-auth-openidc
+
+# STEP 2
 # sudo a2enmod auth_openidc macro proxy_http ssl
+
+# STEP 3
+# sudo systemctl restart apache2
 
 # USAGE: setup-sso-proxy.sh hype9f8-pve san01 https://172.17.0.252:8006
   # -> https://hype9f8-pve.san01.proxy.cirrascale.net
@@ -11,7 +19,7 @@
 # setup-certbot.sh -d 'san01.proxy.cirrascale.net' -d '*.san01.proxy.cirrascale.net'
 
 HOST=${1?}
-SITE=${2?}
+SITE=${2?} # <- /etc/cirrascale/site
 TO=${3?}
 
 cat > /etc/apache2/conf-available/${SITE?}.proxy.cirrascale.net.conf << EOF
