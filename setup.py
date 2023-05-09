@@ -1,2 +1,2 @@
 import setuptools
-setuptools.setup(name='cirrascale-scripts', scripts=['setup-certbot.sh', 'setup-sso-proxy.sh'])
+setuptools.setup(name='cirrascale-scripts', scripts=['setup-certbot.sh', 'setup-ssl-proxy.sh', 'setup-ssl-sso-proxy.sh'])
