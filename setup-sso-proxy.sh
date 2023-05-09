@@ -12,11 +12,8 @@
 # STEP 3
 # sudo systemctl restart apache2
 
-# USAGE: setup-sso-proxy.sh hype9f8-pve san01 https://172.17.0.252:8006
+# Usage: setup-sso-proxy.sh hype9f8-pve san01 https://172.17.0.252:8006
   # -> https://hype9f8-pve.san01.proxy.cirrascale.net
-
-# bmc-440.san01.proxy.cirrascale.net
-# setup-certbot.sh -d 'san01.proxy.cirrascale.net' -d '*.san01.proxy.cirrascale.net'
 
 HOST=${1?}
 SITE=${2?} # <- /etc/cirrascale/site
