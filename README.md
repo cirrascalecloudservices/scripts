@@ -1,7 +1,7 @@
 # Install
 
 ```
-sudo apt install python3-pip
+sudo apt install git python3-pip
 sudo pip install git+https://github.com/cirrascalecloudservices/scripts --force-reinstall
 ```
 
