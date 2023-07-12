@@ -15,11 +15,11 @@ import pynetbox
 url=os.environ['NETBOX_URL']
 apikey=os.environ['NETBOX_APIKEY']
 netbox=pynetbox.api(url, apikey)
-site=netbox.dcim.sites.get(slug=sys.argv[1])
+site=netbox.dcim.sites.get(slug=os.environ['NETBOX_SITE'])
 domainname='secure.{}.cirrascale.net'.format(site.slug)
 
 print(f"""\
-# /etc/apache2/sites-available/cirrascale-bmc-secure.conf
+# /etc/apache2/sites-available/cirrascale-bmcproxy.conf
 
 # sso
 OIDCProviderMetadataURL https://sso.cirrascale.com/realms/cirrascale-staff/.well-known/openid-configuration
