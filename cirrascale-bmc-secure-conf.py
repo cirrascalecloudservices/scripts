@@ -35,17 +35,20 @@ for interface in netbox.dcim.interfaces.filter(site=site.slug, mgmt_only='true',
 for interface_ids in partition(interface_ids, 50):
     for ipaddress in netbox.ipam.ip_addresses.filter(interface_id=interface_ids):
         servername='.'.join([f'bmc-{ipaddress.assigned_object.device.id}', domainname])
+        serveralias='.'.join([f'{domainify(ipaddress.assigned_object.device.name)}-bmc', domainname])
         to=ipaddress.address.split('/')[0]
         print(f"""\
 # {ipaddress.assigned_object.device.name} {ipaddress.assigned_object.name}
 #Listen 80
 <VirtualHost *:80>
  ServerName {servername}
+ ServerAlias {serveralias}
  Redirect / https://{servername}/
 </VirtualHost>
 #Listen 443
 <VirtualHost *:443>
  ServerName {servername}
+ ServerAlias {serveralias}
  # ssl
  SSLEngine on
  SSLCertificateFile /etc/letsencrypt/live/{domainname}/fullchain.pem
