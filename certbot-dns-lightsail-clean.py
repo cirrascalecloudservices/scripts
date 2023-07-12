@@ -17,4 +17,4 @@ domainEntry={
   'type':'TXT',
 }
 response = client.delete_domain_entry(domainName=domainName, domainEntry=domainEntry)
-print(response)
+print(response, flush=True)

@@ -17,7 +17,7 @@ domainEntry={
   'type':'TXT',
 }
 response = client.create_domain_entry(domainName=domainName, domainEntry=domainEntry)
-print(response)
+print(response, flush=True)
 
 # Sleep to make sure the change has time to propagate over to DNS
 time.sleep(25)
