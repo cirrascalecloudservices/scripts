@@ -1,62 +1,12 @@
-#!/bin/bash -ex
+#!/bin/bash
+set -euxo pipefail
+shopt -s inherit_errexit
+# https://dougrichardson.us/notes/fail-fast-bash-scripting.html
 
 # Usage: setup-certbot.sh
 # Usage: setup-certbot.sh -d 'baz.example.com' -d '*.baz.example.com'
 
 apt-get install certbot python3-boto3 -y
-
-# auth hook
-install <(cat << 'EOF'
-#!/usr/bin/env python3
-
-import boto3
-import os
-import time
-
-CERTBOT_DOMAIN=os.environ['CERTBOT_DOMAIN']
-print(CERTBOT_DOMAIN)
-CERTBOT_VALIDATION=os.environ['CERTBOT_VALIDATION']
-print(CERTBOT_VALIDATION)
-
-client = boto3.client('lightsail', region_name='us-east-1')
-domainName='.'.join(CERTBOT_DOMAIN.split('.')[-2:]) # e.g., cirrascale.net
-domainEntry={
-  'name':'_acme-challenge.{}'.format(CERTBOT_DOMAIN),
-  'target':'"{}"'.format(CERTBOT_VALIDATION),
-  'type':'TXT',
-}
-response = client.create_domain_entry(domainName=domainName, domainEntry=domainEntry)
-print(response)
-
-# Sleep to make sure the change has time to propagate over to DNS
-time.sleep(25)
-EOF
-) /usr/local/bin/auth-certbot-dns-lightsail.py
-
-# clean hook
-install <(cat << 'EOF'
-#!/usr/bin/env python3
-
-import boto3
-import os
-import time
-
-CERTBOT_DOMAIN=os.environ['CERTBOT_DOMAIN']
-print(CERTBOT_DOMAIN)
-CERTBOT_VALIDATION=os.environ['CERTBOT_VALIDATION']
-print(CERTBOT_VALIDATION)
-
-client = boto3.client('lightsail', region_name='us-east-1')
-domainName='.'.join(CERTBOT_DOMAIN.split('.')[-2:]) # e.g., cirrascale.net
-domainEntry={
-  'name':'_acme-challenge.{}'.format(CERTBOT_DOMAIN),
-  'target':'"{}"'.format(CERTBOT_VALIDATION),
-  'type':'TXT',
-}
-response = client.delete_domain_entry(domainName=domainName, domainEntry=domainEntry)
-print(response)
-EOF
-) /usr/local/bin/clean-certbot-dns-lightsail.py
 
 # cron daily reload apache
 install <(cat << 'EOF'
@@ -71,8 +21,8 @@ certbot certonly \
 --preferred-challenges dns \
 --manual \
 --manual-public-ip-logging-ok \
---manual-auth-hook auth-certbot-dns-lightsail.py \
---manual-cleanup-hook clean-certbot-dns-lightsail.py \
+--manual-auth-hook certbot-dns-lightsail-auth.py \
+--manual-cleanup-hook certbot-dns-lightsail-clean.py \
 $*
 
 # {{now}}
